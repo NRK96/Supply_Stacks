@@ -119,6 +119,7 @@ current_directory = os.path.dirname(os.path.realpath(__file__))
 # Setup variables for future computation.
 filepath = current_directory + '\\Resources\\Supply_Stacks_Input.txt'
 result = ''
+temp = []
 
 # Check that file exists, if not exit with error message.
 if not os.path.isfile(filepath):
@@ -128,7 +129,8 @@ if not os.path.isfile(filepath):
 file = open(filepath, "r")
 lines = file.readlines()
 
-stack_list = supply_stack_setup()
+stack_list_part_one = supply_stack_setup()
+stack_list_part_two = supply_stack_setup()
 
 for line in lines:
     # This line contains initial stack info, not instructions: skip.
@@ -137,12 +139,26 @@ for line in lines:
     # Break instruction into it's components and execute it.
     instructions = line.strip().split(' ')
     for i in range(0, int(instructions[1])):
-        stack_list[int(instructions[5])-1].append(stack_list[int(instructions[3])-1].pop())
+        # PART 1
+        stack_list_part_one[int(instructions[5])-1].append(stack_list_part_one[int(instructions[3])-1].pop())
+        # PART 2 - Pop off elements like in part 1, then reverse it to keep the original order.
+        temp.append(stack_list_part_two[int(instructions[3])-1].pop())
+    stack_list_part_two[int(instructions[5])-1].extend(list(reversed(temp)))
+    temp.clear()
 
-# Grab the top crate from each stack and output the results.
-for stack in stack_list:
+
+# Grab the top crate from each stack and output the results (Part 1).
+for stack in stack_list_part_one:
     result += stack.pop()
 
-print(f'The top crate for each stack is as follows: {result}')
+print(f'The top crate for each stack is as follows (Part 1): {result}')
+
+result = ''
+
+# Grab the top crate from each stack and output the results (Part 2).
+for stack in stack_list_part_two:
+    result += stack.pop()
+
+print(f'The top crate for each stack is as follows (Part 2): {result}')
 
 file.close()
